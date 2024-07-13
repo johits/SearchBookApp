@@ -33,7 +33,6 @@ internal fun SearchScreen(
 ) {
     val bookState by viewModel.books.collectAsState()
 
-
     // 초기에 책을 불러오도록 예시
     LaunchedEffect(Unit) {
         viewModel.getBooks("파과")
