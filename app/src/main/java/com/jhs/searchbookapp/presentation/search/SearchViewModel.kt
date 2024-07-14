@@ -26,21 +26,10 @@ class SearchViewModel @Inject constructor(
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-//    private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Loading)
-//    val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
-
     private val _booksState = MutableStateFlow<List<Book>>(emptyList())
     val booksState: StateFlow<List<Book>> = _booksState
 
     fun getBooks(query: String) {
-//        viewModelScope.launch {
-//            getSearchResultUseCase(query)
-//                .onSuccess {
-//                    _books.emit(it)
-//                }.onFailure {
-//                    it.printStackTrace()
-//                }
-//        }
         viewModelScope.launch {
             val booksFlow = getSearchResultUseCase(query)
             val bookmarkedIdsFlow = getBookmarkedBookIdsUseCase()

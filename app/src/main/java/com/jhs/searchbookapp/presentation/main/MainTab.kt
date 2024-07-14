@@ -1,6 +1,7 @@
 package com.jhs.searchbookapp.presentation.main
 
 import com.jhs.searchbookapp.R
+import com.jhs.searchbookapp.presentation.bookmark.navigation.BookmarkRoute
 import com.jhs.searchbookapp.presentation.search.navigation.SearchRoute
 
 
@@ -17,8 +18,7 @@ internal enum class MainTab(
     BOOKMARK(
         iconResId = R.drawable.ic_session_bookmark_filled,
         contentDescription = "북마크",
-        SearchRoute.ROUTE
-//        BookmarkRoute.ROUTE,
+        BookmarkRoute.ROUTE
     );
 
     companion object {

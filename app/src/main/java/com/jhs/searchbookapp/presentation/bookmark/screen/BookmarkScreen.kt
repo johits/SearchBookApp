@@ -6,22 +6,30 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.bookmark.BookmarkViewModel
 import com.jhs.searchbookapp.presentation.search.BookCard
+import com.jhs.searchbookapp.presentation.ui.theme.SearchBookAppTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -34,58 +42,58 @@ internal fun BookmarkRoute(
     LaunchedEffect(true) {
         viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surfaceDim)
             .systemBarsPadding()
     ) {
-//        BookmarkContent(
-//            bookmarks = bookmarkUiState,
-//            onBookmarkClick = viewModel.bookmarkUiState
-//        )
+        BookmarkScreen(
+//        onBookClick = onBookClick,
+            onShowErrorSnackBar = onShowErrorSnackBar
+        )
     }
 }
+
 @Composable
 internal fun BookmarkScreen(
-    onBackClick: () -> Unit,
-    onBookClick: (Book) -> Unit,
+//    onBookClick: (Book) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    listContentBottomPadding: Dp = 72.dp,
     viewModel: BookmarkViewModel = hiltViewModel()
 ) {
 //    LaunchedEffect(Unit) {
 //        viewModel.getBooks("파과")
 //    }
-    val books = viewModel.bookmarkUiState.collectAsStateWithLifecycle()
-    val booksItem by remember { books }
+    val bookmarks = viewModel.bookmarkUiState.collectAsStateWithLifecycle()
+    val bookmarksItem by remember { bookmarks }
 
 
     LaunchedEffect(true) {
         viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-//        BookTopAppBar(
-//            searchState = searchState,
-//            onBackClick = onBackClick,
-//        )
-//        BookmarkContent(
-//            bookmarks = booksItem,
-//            modifier = Modifier
-//                .systemBarsPadding()
-//                .padding(top = 48.dp)
-//                .fillMaxSize(),
-//            onBookmarkClick = onBookClick,
-//        )
-    }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(color = Color.LightGray)
+            .padding(horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+//        BookmarkTopAppBar(isEditMode = isEditMode, onClickEditButton = onClickEditButton)
 
+        if (bookmarksItem.isEmpty()) {
+            BookmarkEmptyScreen()
+        }
+
+        BookmarkContent(books = bookmarksItem)
+    }
 }
 
 @Composable
 private fun BookmarkContent(
-    bookmarks: List<Book>,
-    onBookmarkClick: (Book) -> Unit,
+    books: List<Book>,
+//    onBookClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -94,20 +102,20 @@ private fun BookmarkContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         bookItems(
-            items = bookmarks,
-            onItemClick = onBookmarkClick,
+            items = books
+//            onItemClick = onBookClick,
         )
     }
 }
 
 private fun LazyListScope.bookItems(
     items: List<Book>,
-    onItemClick: (Book) -> Unit,
+//    onItemClick: (Book) -> Unit,
 ) {
     itemsIndexed(items) { index, item ->
         BookItem(
-            item = item,
-            onItemClick = onItemClick
+            item = item
+//            onItemClick = onItemClick
         )
     }
 }
@@ -115,10 +123,24 @@ private fun LazyListScope.bookItems(
 @Composable
 private fun BookItem(
     item: Book,
-    onItemClick: (Book) -> Unit,
+//    onItemClick: (Book) -> Unit,
 ) {
     Column {
-        BookCard(book = item, onBookClick = onItemClick)
+        BookCard(
+            book = item
+//            , onBookClick = onItemClick
+        )
     }
 }
 
+@Composable
+private fun BookmarkEmptyScreen() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = stringResource(id = R.string.empty_bookmark_item_description),
+            style = SearchBookAppTheme.typography.titleSmallM,
+            color = Color.Gray
+        )
+    }
+}
