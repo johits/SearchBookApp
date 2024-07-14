@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.presentation.bookmark.navigation.bookmarkNavGraph
-import com.jhs.searchbookapp.presentation.detail.navigation.DetailRoute
 import com.jhs.searchbookapp.presentation.search.navigation.searchNavGraph
 import com.jhs.searchbookapp.presentation.ui.theme.PurpleGrey40
 import kotlinx.collections.immutable.PersistentList
@@ -62,7 +61,7 @@ internal fun MainScreen(
                 when (throwable) {
                     is UnknownHostException -> localContextResource.getString(R.string.error_message_network)
                     else -> {
-                        Log.e("에러발생" , "${throwable?.message}")
+                        Log.e("에러발생", "${throwable?.message}")
                         localContextResource.getString(R.string.error_message_unknown)
                     }
                 }
@@ -90,7 +89,8 @@ internal fun MainScreen(
                     )
 
                     bookmarkNavGraph(
-                        onShowErrorSnackBar = onShowErrorSnackBar
+                        onShowErrorSnackBar = onShowErrorSnackBar,
+                        onBookClick = { navigator.navigateBookDetail(it.isbn) }
                     )
                 }
             }

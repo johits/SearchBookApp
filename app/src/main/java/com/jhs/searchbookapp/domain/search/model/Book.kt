@@ -9,5 +9,6 @@ data class Book(
     val price: Int, //도서 정가
     val sale_price: Int, //도서 판매가
     val thumbnail: String, //도서 표지 미리보기 URL
+    val url: String,
     val isBookmarked: Boolean //즐겨찾기 여부
 )

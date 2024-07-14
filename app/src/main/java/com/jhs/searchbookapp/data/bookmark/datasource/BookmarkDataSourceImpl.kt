@@ -8,31 +8,30 @@ import javax.inject.Inject
 class BookmarkDataSourceImpl @Inject constructor(
     private val bookmarkDao: BookmarkDao
 ) : BookmarkDataSource {
-//    private val bookmarkIds: Flow<Set<String>> = sessionDataSource.bookmarkedSession
     override fun getBookmarkedBookIds(): Flow<List<BookmarkEntity>> {
         return bookmarkDao.getBookmarks()
     }
 
     override suspend fun bookmarkBook(book: BookmarkEntity, bookmark: Boolean) {
-            if (bookmark) {
-                bookmarkDao.insertBookmarkId(book)
-            } else {
-                bookmarkDao.deleteBookmarkId(book.isbn)
-            }
+        if (bookmark) {
+            bookmarkDao.insertBookmarkId(book.copy(isBookmarked = true))
+        } else {
+            bookmarkDao.deleteBookmark(thumbnail = book.thumbnail, url = book.url)
+        }
     }
 
     override suspend fun insertBookmarkId(bookmark: BookmarkEntity) {
-        bookmarkDao.insertBookmarkId(bookmark)
+        bookmarkDao.insertBookmarkId(bookmark.copy(isBookmarked = true))
     }
 
     override suspend fun updateBookmarkId(bookmark: BookmarkEntity) {
         bookmarkDao.updateBookmarkId(bookmark)
     }
 
-    override suspend fun deleteBookmarkId(bookmarkId: String) {
-        bookmarkDao.deleteBookmarkId(bookmarkId)
-
+    override suspend fun deleteBookmark(thumbnail: String, url: String) {
+        bookmarkDao.deleteBookmark(thumbnail, url)
     }
+
 
     override suspend fun deleteAllBookmark() {
         bookmarkDao.deleteAll()

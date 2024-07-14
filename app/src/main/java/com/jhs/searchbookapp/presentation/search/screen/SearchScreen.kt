@@ -1,5 +1,6 @@
 package com.jhs.searchbookapp.presentation.search.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,15 +31,13 @@ internal fun SearchRoute(
     onBackClick: () -> Unit,
     onBookClick: (Book) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel(),
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
     LaunchedEffect(true) {
         viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
 
     SearchScreen(
-        padding = padding,
-        onBackClick = onBackClick,
         onBookClick = onBookClick,
         onShowErrorSnackBar = onShowErrorSnackBar
     )
@@ -46,21 +45,18 @@ internal fun SearchRoute(
 
 @Composable
 internal fun SearchScreen(
-    padding: PaddingValues,
-    onBackClick: () -> Unit,
     onBookClick: (Book) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel()
+    searchViewModel: SearchViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(Unit) {
-        viewModel.getBooks("파과")
+        searchViewModel.getBooks("파과")
     }
-    val books = viewModel.booksState.collectAsStateWithLifecycle()
+    val books = searchViewModel.booksState.collectAsStateWithLifecycle()
     val booksItem by remember { books }
 
-
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
+        searchViewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -74,17 +70,16 @@ internal fun SearchScreen(
                 .systemBarsPadding()
                 .padding(top = 48.dp)
                 .fillMaxSize(),
-            onBookClick = onBookClick,
+            onBookClick = onBookClick
         )
     }
-
 }
 
 @Composable
 private fun BookContent(
     books: List<Book>,
     onBookClick: (Book) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier,
@@ -93,7 +88,7 @@ private fun BookContent(
     ) {
         bookItems(
             items = books,
-            onItemClick = onBookClick,
+            onItemClick = onBookClick
         )
     }
 }
@@ -113,10 +108,13 @@ private fun LazyListScope.bookItems(
 @Composable
 private fun BookItem(
     item: Book,
-    onItemClick: (Book) -> Unit,
+    onItemClick: (Book) -> Unit
 ) {
     Column {
-        BookCard(book = item, onBookClick = onItemClick)
+        BookCard(
+            book = item,
+            onBookClick = onItemClick
+        )
     }
 }
 

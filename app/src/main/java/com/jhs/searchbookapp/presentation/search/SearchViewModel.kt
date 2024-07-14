@@ -35,11 +35,11 @@ class SearchViewModel @Inject constructor(
             val bookmarkedIdsFlow = getBookmarkedBookIdsUseCase()
 
             booksFlow.combine(bookmarkedIdsFlow) { books, bookmarkedIds ->
-                val enhancedSessions = books.map { book ->
-                    book.copy(isBookmarked = bookmarkedIds.contains(book))
+                val enhancedBooks = books.map { book ->
+                    book.copy(isBookmarked = bookmarkedIds.contains(book.copy(isBookmarked = true)))
                 }
                 SearchUiState.Books(
-                    books = enhancedSessions.toPersistentList()
+                    books = enhancedBooks.toPersistentList()
                 )
             }.catch { throwable ->
                 _errorFlow.emit(throwable)

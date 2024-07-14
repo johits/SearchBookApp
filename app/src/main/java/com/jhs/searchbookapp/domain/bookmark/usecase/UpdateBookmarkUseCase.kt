@@ -12,11 +12,11 @@ class UpdateBookmarkUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(book: Book, bookmark: Boolean) {
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             if (bookmark) {
-                bookmarkRepository.insertBookmarkId(book)
+                bookmarkRepository.insertBookmarkId(book.copy(isBookmarked = true))
             } else {
-                bookmarkRepository.deleteBookmarkId(book.isbn)
+                bookmarkRepository.deleteBookmark(thumbnail = book.thumbnail, url = book.url)
             }
         }
 

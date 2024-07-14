@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.bookmark.screen.BookmarkRoute
 
 fun NavController.navigateBookmark(navOptions: NavOptions) {
@@ -12,9 +13,10 @@ fun NavController.navigateBookmark(navOptions: NavOptions) {
 
 fun NavGraphBuilder.bookmarkNavGraph(
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    onBookClick: (Book) -> Unit
 ) {
     composable(route = BookmarkRoute.ROUTE) {
-        BookmarkRoute(onShowErrorSnackBar)
+        BookmarkRoute(onShowErrorSnackBar,onBookClick)
     }
 }
 

@@ -12,10 +12,12 @@ fun Book.toEntity(): BookmarkEntity {
         price = price,
         sale_price = sale_price,
         thumbnail = thumbnail,
+        url = url,
         title = title,
-        isBookmarked = false
+        isBookmarked = isBookmarked
     )
 }
+
 fun BookmarkEntity.toModel(): Book {
     return Book(
         authors = authors,
@@ -25,7 +27,8 @@ fun BookmarkEntity.toModel(): Book {
         price = price,
         sale_price = sale_price,
         thumbnail = thumbnail,
+        url = url,
         title = title,
-        isBookmarked = false
+        isBookmarked = isBookmarked
     )
 }

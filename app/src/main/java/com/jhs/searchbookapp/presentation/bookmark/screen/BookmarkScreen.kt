@@ -28,6 +28,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.bookmark.BookmarkViewModel
+import com.jhs.searchbookapp.presentation.detail.DetailBookmarkStatePopup
+import com.jhs.searchbookapp.presentation.detail.DetailEffect
+import com.jhs.searchbookapp.presentation.detail.DetailViewModel
 import com.jhs.searchbookapp.presentation.search.BookCard
 import com.jhs.searchbookapp.presentation.ui.theme.SearchBookAppTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -35,10 +38,9 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 internal fun BookmarkRoute(
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-    viewModel: BookmarkViewModel = hiltViewModel(),
+    onBookClick: (Book) -> Unit,
+    viewModel: BookmarkViewModel = hiltViewModel()
 ) {
-    val bookmarkUiState by viewModel.bookmarkUiState.collectAsStateWithLifecycle()
-
     LaunchedEffect(true) {
         viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
     }
@@ -49,28 +51,29 @@ internal fun BookmarkRoute(
             .systemBarsPadding()
     ) {
         BookmarkScreen(
-//        onBookClick = onBookClick,
-            onShowErrorSnackBar = onShowErrorSnackBar
+            onShowErrorSnackBar = onShowErrorSnackBar,
+            onBookClick = onBookClick
         )
     }
 }
 
 @Composable
 internal fun BookmarkScreen(
-//    onBookClick: (Book) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     listContentBottomPadding: Dp = 72.dp,
-    viewModel: BookmarkViewModel = hiltViewModel()
+    onBookClick: (Book) -> Unit,
+    searchViewModel: BookmarkViewModel = hiltViewModel(),
+    detailViewModel: DetailViewModel = hiltViewModel(),
 ) {
 //    LaunchedEffect(Unit) {
 //        viewModel.getBooks("파과")
 //    }
-    val bookmarks = viewModel.bookmarkUiState.collectAsStateWithLifecycle()
+    val bookmarks = searchViewModel.bookmarkUiState.collectAsStateWithLifecycle()
     val bookmarksItem by remember { bookmarks }
-
+    val effect by detailViewModel.detailUiEffect.collectAsStateWithLifecycle()
 
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
+        searchViewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
 
     Column(
@@ -86,15 +89,27 @@ internal fun BookmarkScreen(
             BookmarkEmptyScreen()
         }
 
-        BookmarkContent(books = bookmarksItem)
+        BookmarkContent(
+            books = bookmarksItem,
+            onBookClick = onBookClick,
+        )
+
+//        Box {
+//            if (effect is DetailEffect.ShowToastForBookmarkState) {
+//                DetailBookmarkStatePopup(
+//                    bookmarked = (effect as DetailEffect.ShowToastForBookmarkState).bookmarked
+//                )
+//            }
+//        }
+
     }
 }
 
 @Composable
 private fun BookmarkContent(
     books: List<Book>,
-//    onBookClick: (Book) -> Unit,
-    modifier: Modifier = Modifier,
+    onBookClick: (Book) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier,
@@ -102,33 +117,33 @@ private fun BookmarkContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         bookItems(
-            items = books
-//            onItemClick = onBookClick,
+            items = books,
+            onBookClick = onBookClick
         )
     }
 }
 
 private fun LazyListScope.bookItems(
     items: List<Book>,
-//    onItemClick: (Book) -> Unit,
+    onBookClick: (Book) -> Unit
 ) {
     itemsIndexed(items) { index, item ->
         BookItem(
-            item = item
-//            onItemClick = onItemClick
+            book = item,
+            onBookClick = onBookClick
         )
     }
 }
 
 @Composable
 private fun BookItem(
-    item: Book,
-//    onItemClick: (Book) -> Unit,
+    book: Book,
+    onBookClick: (Book) -> Unit
 ) {
     Column {
         BookCard(
-            book = item
-//            , onBookClick = onItemClick
+            book = book,
+            onBookClick = onBookClick
         )
     }
 }

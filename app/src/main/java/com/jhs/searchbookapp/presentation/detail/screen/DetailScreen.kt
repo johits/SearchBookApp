@@ -16,8 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -48,13 +45,11 @@ import com.jhs.searchbookapp.presentation.detail.DetailBookmarkStatePopup
 import com.jhs.searchbookapp.presentation.detail.DetailEffect
 import com.jhs.searchbookapp.presentation.detail.DetailUiState
 import com.jhs.searchbookapp.presentation.detail.DetailViewModel
-import com.jhs.searchbookapp.presentation.search.SearchViewModel
-import com.jhs.searchbookapp.presentation.search.screen.SearchScreen
 import com.jhs.searchbookapp.presentation.ui.components.SearchBookAppTopAppBar
 import com.jhs.searchbookapp.presentation.ui.components.TopAppBarNavigationType
+import com.jhs.searchbookapp.presentation.ui.components.button.BookmarkToggleButton
 import com.jhs.searchbookapp.presentation.ui.theme.SearchBookAppTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 
 
 @Composable
@@ -96,7 +91,7 @@ internal fun BookDetailScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surfaceDim)
             .systemBarsPadding()
-            .verticalScroll(scrollState),
+            .verticalScroll(scrollState)
     ) {
         BookDetailTopAppBar(
             bookmarked = (detailUiState as? DetailUiState.Success)?.bookmarked ?: false,
@@ -114,7 +109,7 @@ internal fun BookDetailScreen(
     }
 
     LaunchedEffect(bookId) {
-        viewModel.fetchSession(bookId)
+        viewModel.fetchBook(bookId)
     }
 
     LaunchedEffect(effect) {
@@ -154,26 +149,6 @@ private fun BookOverview(content: String) {
     )
 }
 
-@Composable
-private fun BookmarkToggleButton(
-    bookmarked: Boolean,
-    onClickBookmark: (Boolean) -> Unit,
-) {
-    IconToggleButton(
-        checked = bookmarked,
-        onCheckedChange = onClickBookmark
-    ) {
-        Icon(
-            painter =
-            if (bookmarked) {
-                painterResource(id = R.drawable.ic_session_bookmark_filled)
-            } else {
-                painterResource(id = R.drawable.ic_session_bookmark)
-            },
-            contentDescription = null
-        )
-    }
-}
 
 @Composable
 private fun BookDetailTitle(
@@ -272,6 +247,7 @@ private fun DetailLoading() {
         CircularProgressIndicator()
     }
 }
+
 @Composable
 private fun BookDetailContent(book: Book) {
     Column(
@@ -314,7 +290,7 @@ fun ThumbnailImage(
 
 @Preview
 @Composable
-private fun SessionDetailTopAppBarPreview() {
+private fun BookDetailTopAppBarPreview() {
     SearchBookAppTheme {
         var state by remember { mutableStateOf(false) }
         BookDetailTopAppBar(
@@ -341,6 +317,7 @@ private val SampleBookNoContent = Book(
     publisher = "인플루엔셜",
     thumbnail = "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1467038",
     title = "미움받을 용기",
+    url = "",
     isBookmarked = false
 )
 

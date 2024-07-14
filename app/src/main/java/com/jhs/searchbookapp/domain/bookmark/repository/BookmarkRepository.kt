@@ -10,7 +10,7 @@ interface BookmarkRepository {
     suspend fun insertBookmarkId(bookmark: Book)
     suspend fun updateBookmarkId(bookmark: Book)
 
-    suspend fun deleteBookmarkId(bookmarkId: String)
+    suspend fun deleteBookmark(thumbnail: String, url: String)
 
     suspend fun deleteAllBookmark()
 }

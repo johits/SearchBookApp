@@ -10,7 +10,7 @@ interface BookmarkDataSource {
     suspend fun insertBookmarkId(bookmark: BookmarkEntity)
     suspend fun updateBookmarkId(bookmark: BookmarkEntity)
 
-    suspend fun deleteBookmarkId(bookmarkId: String)
+    suspend fun deleteBookmark(thumbnail: String, url: String)
 
     suspend fun deleteAllBookmark()
 }

@@ -12,6 +12,7 @@ fun BookResponse.toModel(): Book {
         price = price,
         sale_price = sale_price,
         thumbnail = thumbnail,
+        url = url,
         title = title,
         isBookmarked = false
     )

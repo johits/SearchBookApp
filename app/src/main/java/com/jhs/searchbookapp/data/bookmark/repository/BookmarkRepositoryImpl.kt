@@ -30,8 +30,8 @@ class BookmarkRepositoryImpl @Inject constructor(
         return bookmarkDataSource.updateBookmarkId(book.toEntity())
     }
 
-    override suspend fun deleteBookmarkId(bookmarkId: String) {
-        return bookmarkDataSource.deleteBookmarkId(bookmarkId)
+    override suspend fun deleteBookmark(thumbnail: String, url: String) {
+        return bookmarkDataSource.deleteBookmark(thumbnail = thumbnail, url = url)
     }
 
     override suspend fun deleteAllBookmark() {

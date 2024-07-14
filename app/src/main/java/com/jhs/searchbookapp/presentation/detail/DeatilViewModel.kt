@@ -1,9 +1,11 @@
 package com.jhs.searchbookapp.presentation.detail
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jhs.searchbookapp.domain.bookmark.usecase.GetBookmarkedBookIdsUseCase
 import com.jhs.searchbookapp.domain.bookmark.usecase.UpdateBookmarkUseCase
+import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.domain.search.usecase.GetBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,14 +38,20 @@ class DetailViewModel @Inject constructor(
                 when (detailUiState) {
                     is DetailUiState.Loading -> detailUiState
                     is DetailUiState.Success -> {
-                        detailUiState.copy(bookmarked = bookmarks.contains(detailUiState.book))
+                        detailUiState.copy(
+                            bookmarked = bookmarks.contains(
+                                detailUiState.book.copy(
+                                    isBookmarked = true
+                                )
+                            )
+                        )
                     }
                 }
             }.collect { _detailUiState.value = it }
         }
     }
 
-    fun fetchSession(bookId: String) {
+    fun fetchBook(bookId: String) {
         viewModelScope.launch {
             val book = getBookUseCase(bookId)
             _detailUiState.value = DetailUiState.Success(book)
@@ -59,6 +67,13 @@ class DetailViewModel @Inject constructor(
             val bookmark = uiState.bookmarked
             updateBookmarkUseCase(uiState.book, !bookmark)
             _detailUiEffect.value = DetailEffect.ShowToastForBookmarkState(!bookmark)
+        }
+    }
+
+    fun updateBookmark(book: Book, isBookmark: Boolean) {
+        viewModelScope.launch {
+            updateBookmarkUseCase(book, isBookmark)
+            _detailUiEffect.value = DetailEffect.ShowToastForBookmarkState(isBookmark)
         }
     }
 

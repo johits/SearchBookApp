@@ -18,9 +18,8 @@ interface BookmarkDao {
     @Query("SELECT * FROM bookmark")
     fun getBookmarks(): Flow<List<BookmarkEntity>>
 
-    // 삭제
-    @Query("DELETE FROM bookmark where isbn = :bookmarkId")
-    fun deleteBookmarkId(bookmarkId: String)
+    @Query("DELETE FROM bookmark where thumbnail = :thumbnail AND url = :url")
+    fun deleteBookmark(thumbnail: String, url: String)
 
     @Query("DELETE FROM bookmark")
     fun deleteAll()
