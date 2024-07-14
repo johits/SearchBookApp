@@ -1,4 +1,4 @@
-package com.jhs.searchbookapp.data.core.retrofit
+package com.jhs.searchbookapp.data.core.remote.retrofit
 
 import com.jhs.searchbookapp.data.core.constant.ServiceConstant.BASE_URL
 import dagger.Module

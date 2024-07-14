@@ -1,15 +1,16 @@
-package com.jhs.searchbookapp.presentation.search.screen
+package com.jhs.searchbookapp.presentation.bookmark.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,43 +20,44 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jhs.searchbookapp.domain.search.model.Book
+import com.jhs.searchbookapp.presentation.bookmark.BookmarkViewModel
 import com.jhs.searchbookapp.presentation.search.BookCard
-import com.jhs.searchbookapp.presentation.search.SearchViewModel
 import kotlinx.coroutines.flow.collectLatest
 
-
 @Composable
-internal fun SearchRoute(
-    padding: PaddingValues,
-    onBackClick: () -> Unit,
-    onBookClick: (Book) -> Unit,
+internal fun BookmarkRoute(
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel(),
+    viewModel: BookmarkViewModel = hiltViewModel(),
 ) {
+    val bookmarkUiState by viewModel.bookmarkUiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(true) {
-        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
+        viewModel.errorFlow.collectLatest { onShowErrorSnackBar(it) }
     }
 
-    SearchScreen(
-        padding = padding,
-        onBackClick = onBackClick,
-        onBookClick = onBookClick,
-        onShowErrorSnackBar = onShowErrorSnackBar
-    )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceDim)
+            .systemBarsPadding()
+    ) {
+//        BookmarkContent(
+//            bookmarks = bookmarkUiState,
+//            onBookmarkClick = viewModel.bookmarkUiState
+//        )
+    }
 }
-
 @Composable
-internal fun SearchScreen(
-    padding: PaddingValues,
+internal fun BookmarkScreen(
     onBackClick: () -> Unit,
     onBookClick: (Book) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: BookmarkViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.getBooks("파과")
-    }
-    val books = viewModel.booksState.collectAsStateWithLifecycle()
+//    LaunchedEffect(Unit) {
+//        viewModel.getBooks("파과")
+//    }
+    val books = viewModel.bookmarkUiState.collectAsStateWithLifecycle()
     val booksItem by remember { books }
 
 
@@ -68,22 +70,22 @@ internal fun SearchScreen(
 //            searchState = searchState,
 //            onBackClick = onBackClick,
 //        )
-        BookContent(
-            books = booksItem,
-            modifier = Modifier
-                .systemBarsPadding()
-                .padding(top = 48.dp)
-                .fillMaxSize(),
-            onBookClick = onBookClick,
-        )
+//        BookmarkContent(
+//            bookmarks = booksItem,
+//            modifier = Modifier
+//                .systemBarsPadding()
+//                .padding(top = 48.dp)
+//                .fillMaxSize(),
+//            onBookmarkClick = onBookClick,
+//        )
     }
 
 }
 
 @Composable
-private fun BookContent(
-    books: List<Book>,
-    onBookClick: (Book) -> Unit,
+private fun BookmarkContent(
+    bookmarks: List<Book>,
+    onBookmarkClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -92,8 +94,8 @@ private fun BookContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         bookItems(
-            items = books,
-            onItemClick = onBookClick,
+            items = bookmarks,
+            onItemClick = onBookmarkClick,
         )
     }
 }

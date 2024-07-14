@@ -9,8 +9,10 @@ fun BookResponse.toModel(): Book {
         contents = contents,
         isbn = isbn,
         publisher = publisher,
+        price = price,
         sale_price = sale_price,
         thumbnail = thumbnail,
         title = title,
+        isBookmarked = false
     )
 }

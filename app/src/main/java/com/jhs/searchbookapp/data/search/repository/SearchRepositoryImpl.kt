@@ -14,14 +14,21 @@ class SearchRepositoryImpl @Inject constructor(
     private var cachedBooks: List<Book> = emptyList()
 
     override suspend fun getBooks(query: String): List<Book> {
-        return searchDataSource.getBooks(query).map { it.toModel() }.also { cachedBooks = it }
+
+        return searchDataSource.getBooks(query)
+            .map { it.toModel() }
+            .also { cachedBooks = it }
+
     }
 
+
     override suspend fun getBook(bookId: String): Book {
-        val cachedBook = cachedBooks.find { it.isbn ==  bookId}
-//        if (cachedBook != null){
-//            return cachedBook
-//        }
-        return cachedBook ?: error("정보 불러오기에 실패하였습니다.")
+        val cachedSession = cachedBooks.find { it.isbn == bookId }
+        if (cachedSession != null) {
+            return cachedSession
+        }
+
+        return getBooks("파과").find { it.isbn == bookId }
+            ?: error("정보 불러오기에 실패하였습니다.")
     }
 }
