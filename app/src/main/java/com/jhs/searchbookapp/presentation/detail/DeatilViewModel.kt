@@ -2,13 +2,10 @@ package com.jhs.searchbookapp.presentation.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.jhs.searchbookapp.domain.bookmark.usecase.GetBookmarkedBookIdsUseCase
 import com.jhs.searchbookapp.domain.bookmark.usecase.UpdateBookmarkUseCase
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.domain.search.usecase.GetBookUseCase
-import com.jhs.searchbookapp.domain.search.usecase.GetSearchResultUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

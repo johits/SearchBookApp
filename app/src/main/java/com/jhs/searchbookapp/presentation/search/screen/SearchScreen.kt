@@ -14,15 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
+import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.search.BookCard
 import com.jhs.searchbookapp.presentation.search.SearchViewModel
+import com.jhs.searchbookapp.presentation.ui.theme.SearchBookAppTheme
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -59,6 +63,31 @@ internal fun SearchScreen(
     LaunchedEffect(true) {
         searchViewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
+
+//    if (books.isEmpty()) {
+//        BookmarkEmptyScreen()
+//    }
+
+//    SearchView(
+//        query = searchViewModel.query.value,
+//        onQueryChanged = { newQuery ->
+//            searchViewModel.setQuery(newQuery)
+//        },
+//        onSearch = {
+//            searchViewModel.getBooks(searchViewModel.query.value)
+//            focusManager.clearFocus()
+//        },
+//        onClearQuery = {
+//            searchViewModel.setQuery("")
+//            searchViewModel.getBooks("")
+//        },
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .background(
+//                color = Color.White,
+//                shape = RoundedCornerShape(8.dp)
+//            )
+//    )
 
     Box(modifier = Modifier.fillMaxSize()) {
 //        BookTopAppBar(
@@ -99,7 +128,7 @@ private fun BookContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "에러 발생")
+                Text(text = "검색 결과가 없습니다.")
             }
         }
 
@@ -161,3 +190,14 @@ private fun BookItem(
     }
 }
 
+@Composable
+private fun SearchEmptyScreen() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = stringResource(id = R.string.empty_search_item_description),
+            style = SearchBookAppTheme.typography.titleSmallM,
+            color = Color.Gray
+        )
+    }
+}

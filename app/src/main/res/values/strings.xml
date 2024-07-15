@@ -8,6 +8,9 @@
     <string name="detail_price">판매가</string>
     <string name="detail_introduction">소개</string>
 
+    <string name="search_books">책 검색하기</string>
+    <string name="empty_search_item_description">검색된 도서가 없습니다</string>
+
 
     <string name="detail_bookmark_popup">북마크에 저장했습니다.</string>
     <string name="detail_un_bookmark_popup">북마크가 해제되었습니다.</string>

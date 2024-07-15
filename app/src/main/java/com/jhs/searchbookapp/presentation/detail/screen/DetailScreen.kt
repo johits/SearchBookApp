@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -53,23 +52,6 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-internal fun DetailRoute(
-    padding: PaddingValues,
-    bookId: String,
-    onBackClick: () -> Unit,
-    viewModel: DetailViewModel = hiltViewModel(),
-) {
-//    LaunchedEffect(true) {
-//        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
-//    }
-
-    BookDetailScreen(
-        bookId = bookId,
-        onBackClick = onBackClick
-    )
-}
-
-@Composable
 internal fun BookDetailScreen(
     bookId: String,
     onBackClick: () -> Unit,
@@ -79,11 +61,7 @@ internal fun BookDetailScreen(
     val detailUiState by viewModel.detailUiState.collectAsStateWithLifecycle()
     val effect by viewModel.detailUiEffect.collectAsStateWithLifecycle()
 
-//    LaunchedEffect(effect) {
-//        if (effect is DetailEffect.ShowToastForBookmarkState) {
-//            sendWidgetUpdateCommand(context)
-//        }
-//    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

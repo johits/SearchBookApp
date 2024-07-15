@@ -59,7 +59,7 @@ fun BookCardContent(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = MaterialTheme.colorScheme.background,
                 shape = RoundedCornerShape(8.dp)
             )
             .padding(start = 16.dp, end = 18.dp, top = 16.dp, bottom = 16.dp),
