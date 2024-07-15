@@ -2,11 +2,13 @@ package com.jhs.searchbookapp.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.jhs.searchbookapp.domain.bookmark.usecase.GetBookmarkedBookIdsUseCase
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.domain.search.usecase.GetSearchResultUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -26,25 +28,22 @@ class SearchViewModel @Inject constructor(
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    private val _booksState = MutableStateFlow<List<Book>>(emptyList())
-    val booksState: StateFlow<List<Book>> = _booksState
+    private val _booksState = MutableStateFlow<PagingData<Book>>(PagingData.empty())
+    val booksState: StateFlow<PagingData<Book>> = _booksState
 
     fun getBooks(query: String) {
         viewModelScope.launch {
-            val booksFlow = getSearchResultUseCase(query)
+            val booksFlow = getSearchResultUseCase(query).cachedIn(viewModelScope)
             val bookmarkedIdsFlow = getBookmarkedBookIdsUseCase()
 
             booksFlow.combine(bookmarkedIdsFlow) { books, bookmarkedIds ->
-                val enhancedBooks = books.map { book ->
+                books.map { book ->
                     book.copy(isBookmarked = bookmarkedIds.contains(book.copy(isBookmarked = true)))
                 }
-                SearchUiState.Books(
-                    books = enhancedBooks.toPersistentList()
-                )
             }.catch { throwable ->
                 _errorFlow.emit(throwable)
             }.collect { combinedUiState ->
-                _booksState.value = combinedUiState.books
+                _booksState.value = combinedUiState
             }
         }
     }

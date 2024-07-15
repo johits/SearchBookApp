@@ -1,6 +1,5 @@
 package com.jhs.searchbookapp.presentation.search.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,16 +8,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.search.BookCard
 import com.jhs.searchbookapp.presentation.search.SearchViewModel
@@ -47,14 +48,14 @@ internal fun SearchRoute(
 internal fun SearchScreen(
     onBookClick: (Book) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
-    searchViewModel: SearchViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
-        searchViewModel.getBooks("파과")
+        searchViewModel.getBooks("사랑")
     }
-    val books = searchViewModel.booksState.collectAsStateWithLifecycle()
-    val booksItem by remember { books }
-
+    val books = searchViewModel.booksState.collectAsLazyPagingItems()
+//    val booksItem by remember { books }
+//    val books = mainViewModel.bookPager.collectAsLazyPagingItems()
     LaunchedEffect(true) {
         searchViewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
@@ -65,7 +66,7 @@ internal fun SearchScreen(
 //            onBackClick = onBackClick,
 //        )
         BookContent(
-            books = booksItem,
+            books = books,
             modifier = Modifier
                 .systemBarsPadding()
                 .padding(top = 48.dp)
@@ -77,33 +78,75 @@ internal fun SearchScreen(
 
 @Composable
 private fun BookContent(
-    books: List<Book>,
+    books: LazyPagingItems<Book>,
     onBookClick: (Book) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        bookItems(
-            items = books,
-            onItemClick = onBookClick
-        )
+    when (books.loadState.refresh) {
+        LoadState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is LoadState.Error -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "에러 발생")
+            }
+        }
+
+        else -> {
+            LazyColumn(
+                modifier = modifier,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                itemsIndexed(books) { index, item ->
+                    item?.let {
+                        BookItem(
+                            item = item,
+                            onItemClick = onBookClick
+                        )
+                    }
+                }
+//                bookItems(
+//                    items = books,
+//                    onItemClick = onBookClick
+//                )
+            }
+        }
     }
+
 }
 
-private fun LazyListScope.bookItems(
-    items: List<Book>,
-    onItemClick: (Book) -> Unit,
-) {
-    itemsIndexed(items) { index, item ->
-        BookItem(
-            item = item,
-            onItemClick = onItemClick
-        )
-    }
-}
+//private fun LazyListScope.bookItems(
+//    items: List<Book>,
+//    onItemClick: (Book) -> Unit,
+//) {
+//    itemsIndexed(items) { index, item ->
+//        item?.let {
+//            BookItem(
+//                item = item,
+//                onItemClick = onItemClick
+//            )
+//        }
+//    }
+//
+////    itemsIndexed(items) { index, item ->
+////        BookItem(
+////            item = item,
+////            onItemClick = onItemClick
+////        )
+////    }
+//}
 
 @Composable
 private fun BookItem(

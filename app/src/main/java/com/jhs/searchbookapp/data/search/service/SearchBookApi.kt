@@ -8,5 +8,7 @@ interface SearchBookApi {
     @GET("v3/search/book")
     suspend fun getBookData(
         @Query("query") query: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int
     ): BooksResponse
 }

@@ -79,8 +79,6 @@ internal fun BookDetailScreen(
     val detailUiState by viewModel.detailUiState.collectAsStateWithLifecycle()
     val effect by viewModel.detailUiEffect.collectAsStateWithLifecycle()
 
-    val context = LocalContext.current
-
 //    LaunchedEffect(effect) {
 //        if (effect is DetailEffect.ShowToastForBookmarkState) {
 //            sendWidgetUpdateCommand(context)
