@@ -25,57 +25,15 @@ class BookmarkViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getBookmarkedBookIdsUseCase().collect {
-                _bookmarkUiState.emit(it)
+            getBookmarkedBookIdsUseCase().collect { list ->
+                _bookmarkUiState.emit(list.sortedBy { it.title })
             }
-//
-//            combine(
-//                bookmarkUiState,
-//                getBookmarkedBookIdsUseCase(),
-//            ) { bookmarkUiState, bookmarkBook ->
-//                when (bookmarkUiState) {
-//                    is BookmarkUiState.Loading -> {
-//                        BookmarkUiState.Success(
-//                            isEditButtonSelected = false,
-//                            bookmarks = bookmarkBook
-//                                .mapIndexed { index, book ->
-//                                    BookmarkItemUiState(
-//                                        index = index,
-//                                        book = book,
-//                                        isEditMode = false
-//                                    )
-//                                }
-//                        )
-//                    }
-//
-//                    is BookmarkUiState.Success -> {
-//                        bookmarkUiState.copy(
-//                            bookmarks = bookmarkBook
-//                                .mapIndexed { index, book ->
-//                                    BookmarkItemUiState(
-//                                        index = index,
-//                                        book = book,
-//                                        isEditMode = bookmarkUiState.isEditButtonSelected
-//                                    )
-//                                }
-//                        )
-//                    }
-//                }
-//            }.catch { throwable ->
-//                _errorFlow.emit(throwable)
-//            }.collect { _bookmarkUiState.value = it }
         }
     }
 
-//    fun clickEditButton() {
-//        val state = _bookmarkUiState.value
-//        if (state !is BookmarkUiState.Success) {
-//            return
-//        }
-//
-//        _bookmarkUiState.value = state.copy(
-//            isEditButtonSelected = state.isEditButtonSelected.not(),
-//            bookmarks = state.bookmarks.map { it.copy(isEditMode = !it.isEditMode.not()) }
-//        )
-//    }
+    fun updateBookmarkUiState(books: List<Book>) {
+        viewModelScope.launch {
+            _bookmarkUiState.emit(books)
+        }
+    }
 }

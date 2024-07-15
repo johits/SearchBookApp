@@ -12,6 +12,7 @@
     <string name="empty_search_item_description">검색된 도서가 없습니다</string>
 
 
+    <string name="detail_title_sort">도서 제목 정렬</string>
     <string name="detail_bookmark_popup">북마크에 저장했습니다.</string>
     <string name="detail_un_bookmark_popup">북마크가 해제되었습니다.</string>
     <string name="empty_bookmark_item_description">북마크된 아이템이 없습니다</string>

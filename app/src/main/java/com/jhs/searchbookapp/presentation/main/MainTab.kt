@@ -11,12 +11,12 @@ internal enum class MainTab(
     val route: String,
 ) {
     SEARCH(
-        iconResId = R.drawable.ic_session_bookmark,
+        iconResId = R.drawable.ic_search_unclick,
         contentDescription = "도서 검색",
         SearchRoute.ROUTE
     ),
     BOOKMARK(
-        iconResId = R.drawable.ic_session_bookmark_filled,
+        iconResId = R.drawable.ic_session_bookmark,
         contentDescription = "북마크",
         BookmarkRoute.ROUTE
     );

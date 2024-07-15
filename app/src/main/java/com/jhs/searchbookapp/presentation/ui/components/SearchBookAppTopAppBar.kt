@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,9 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.presentation.ui.theme.SearchBookAppTheme
 
 @Composable
@@ -64,6 +67,15 @@ fun SearchBookAppTopAppBar(
                     Icons.AutoMirrored.Filled.ArrowBack
                 )
             }
+
+            if (navigationType == TopAppBarNavigationType.None) {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(13.dp)
+                ){}
+            }
+
             Row(Modifier.align(Alignment.CenterEnd)) {
                 actionButtons()
                 if (navigationType == TopAppBarNavigationType.Close) {
@@ -82,7 +94,7 @@ fun SearchBookAppTopAppBar(
     }
 }
 
-enum class TopAppBarNavigationType { Back, Close }
+enum class TopAppBarNavigationType { Back, Close, None }
 
 @Preview
 @Composable
@@ -93,6 +105,17 @@ private fun SearchBookTopAppBarPreviewBack() {
         navigationIconContentDescription = "Navigation icon"
     )
 }
+
+@Preview
+@Composable
+private fun SearchBookAppTopAppBarPreviewSort() {
+    SearchBookAppTopAppBar(
+        titleRes = android.R.string.untitled,
+        navigationType = TopAppBarNavigationType.None,
+        navigationIconContentDescription = "Navigation icon"
+    )
+}
+
 
 @Preview
 @Composable

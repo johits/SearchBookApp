@@ -40,7 +40,7 @@ import androidx.navigation.compose.NavHost
 import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.presentation.bookmark.navigation.bookmarkNavGraph
 import com.jhs.searchbookapp.presentation.search.navigation.searchNavGraph
-import com.jhs.searchbookapp.presentation.ui.theme.PurpleGrey40
+import com.jhs.searchbookapp.presentation.ui.theme.HotPink
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
@@ -171,8 +171,7 @@ private fun RowScope.MainBottomBarItem(
             painter = painterResource(tab.iconResId),
             contentDescription = tab.contentDescription,
             tint = if (selected) {
-                PurpleGrey40
-//                Neon01
+                HotPink
             } else {
                 MaterialTheme.colorScheme.outline
             },
