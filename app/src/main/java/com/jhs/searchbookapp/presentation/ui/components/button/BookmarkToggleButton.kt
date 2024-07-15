@@ -18,9 +18,9 @@ fun BookmarkToggleButton(
         Icon(
             painter =
             if (bookmarked) {
-                painterResource(id = R.drawable.ic_session_bookmark_filled)
+                painterResource(id = R.drawable.ic_bookmark_filled)
             } else {
-                painterResource(id = R.drawable.ic_session_bookmark)
+                painterResource(id = R.drawable.ic_bookmark)
             },
             contentDescription = null
         )

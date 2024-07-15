@@ -16,7 +16,7 @@ internal enum class MainTab(
         SearchRoute.ROUTE
     ),
     BOOKMARK(
-        iconResId = R.drawable.ic_session_bookmark,
+        iconResId = R.drawable.ic_bookmark,
         contentDescription = "북마크",
         BookmarkRoute.ROUTE
     );
