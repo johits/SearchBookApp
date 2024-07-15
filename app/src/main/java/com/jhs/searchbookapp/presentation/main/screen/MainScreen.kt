@@ -1,4 +1,4 @@
-package com.jhs.searchbookapp.presentation.main
+package com.jhs.searchbookapp.presentation.main.screen
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -39,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.presentation.bookmark.navigation.bookmarkNavGraph
+import com.jhs.searchbookapp.presentation.main.MainNavigator
+import com.jhs.searchbookapp.presentation.main.MainTab
+import com.jhs.searchbookapp.presentation.main.rememberMainNavigator
 import com.jhs.searchbookapp.presentation.search.navigation.searchNavGraph
 import com.jhs.searchbookapp.presentation.ui.theme.HotPink
 import kotlinx.collections.immutable.PersistentList
