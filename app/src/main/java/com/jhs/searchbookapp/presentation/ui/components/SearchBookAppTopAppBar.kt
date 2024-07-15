@@ -68,12 +68,27 @@ fun SearchBookAppTopAppBar(
                 )
             }
 
+            if (navigationType == TopAppBarNavigationType.Refresh) {
+
+                IconButton(
+                    onClick = onNavigationClick,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .size(48.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_refresh),
+                        contentDescription = "Refresh Icon",
+                    )
+                }
+            }
+
             if (navigationType == TopAppBarNavigationType.None) {
                 Row(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .padding(13.dp)
-                ){}
+                ) {}
             }
 
             Row(Modifier.align(Alignment.CenterEnd)) {
@@ -94,7 +109,7 @@ fun SearchBookAppTopAppBar(
     }
 }
 
-enum class TopAppBarNavigationType { Back, Close, None }
+enum class TopAppBarNavigationType { Back, Close, None, Refresh }
 
 @Preview
 @Composable
@@ -102,6 +117,16 @@ private fun SearchBookTopAppBarPreviewBack() {
     SearchBookAppTopAppBar(
         titleRes = android.R.string.untitled,
         navigationType = TopAppBarNavigationType.Back,
+        navigationIconContentDescription = "Navigation icon"
+    )
+}
+
+@Preview
+@Composable
+private fun SearchBookAppTopAppBarPreviewRefresh() {
+    SearchBookAppTopAppBar(
+        titleRes = android.R.string.untitled,
+        navigationType = TopAppBarNavigationType.Refresh,
         navigationIconContentDescription = "Navigation icon"
     )
 }

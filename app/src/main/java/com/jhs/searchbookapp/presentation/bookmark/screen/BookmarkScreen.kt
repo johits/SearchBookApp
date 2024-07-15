@@ -29,7 +29,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +39,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -81,12 +79,11 @@ internal fun BookmarkRoute(
 internal fun BookmarkScreen(
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onBookClick: (Book) -> Unit,
-    searchViewModel: BookmarkViewModel = hiltViewModel(),
-    bookmarkViewModel: BookmarkViewModel = hiltViewModel()
+    viewModel: BookmarkViewModel = hiltViewModel()
 ) {
 
-    val bookmarks = searchViewModel.bookmarkUiState.collectAsStateWithLifecycle()
-    val bookmarksItem by rememberSaveable { bookmarks }
+    val bookmarks = viewModel.bookmarkUiState.collectAsStateWithLifecycle()
+    val bookmarksItem by remember { bookmarks }
     var sortIconClicked by remember { mutableStateOf(false) }
     val data = if (sortIconClicked) {
         bookmarksItem.sortedBy { it.title }
@@ -95,7 +92,7 @@ internal fun BookmarkScreen(
     }
 
     LaunchedEffect(true) {
-        searchViewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
+        viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
 
     Column(
@@ -108,10 +105,13 @@ internal fun BookmarkScreen(
             clickState = sortIconClicked,
             onClickIcon = {
                 sortIconClicked = !sortIconClicked
-                bookmarkViewModel.updateBookmarkUiState(data)
+                viewModel.updateBookmarkUiState(data)
             }
         )
+
         SettingPriceForm(bookmarksItem)
+        SearchAuthorsForm(bookmarksItem)
+
         if (bookmarksItem.isEmpty()) {
             BookmarkEmptyScreen()
         }
@@ -126,17 +126,21 @@ internal fun BookmarkScreen(
 @Composable
 private fun BookDetailTopAppBar(
     clickState: Boolean,
-    onClickIcon: (Boolean) -> Unit
+    onClickIcon: (Boolean) -> Unit,
+    viewModel: BookmarkViewModel = hiltViewModel()
 ) {
     SearchBookAppTopAppBar(
         titleRes = R.string.detail_title_sort,
         navigationIconContentDescription = null,
-        navigationType = TopAppBarNavigationType.None,
+        navigationType = TopAppBarNavigationType.Refresh,
         actionButtons = {
             SortToggleButton(
                 clickState = clickState,
                 onClick = onClickIcon
             )
+        },
+        onNavigationClick = {
+            viewModel.refreshBookmarkUiState()
         }
     )
 }
@@ -242,6 +246,28 @@ fun HighPriceField(
 }
 
 @Composable
+fun SearchField(
+    value: String,
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String = "저자 검색"
+) {
+    val focusManager = LocalFocusManager.current
+    TextField(
+        value = value,
+        onValueChange = onChange,
+        modifier = modifier,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        ),
+        label = { Text(label) },
+        singleLine = true,
+        visualTransformation = VisualTransformation.None
+    )
+}
+
+@Composable
 fun SettingPriceForm(
     bookmarks: List<Book>,
     viewModel: BookmarkViewModel = hiltViewModel()
@@ -280,13 +306,9 @@ fun SettingPriceForm(
                 onClick = {
                     val filteredList = bookmarks.filter {
                         val salePrice = if (it.sale_price > 0) it.sale_price else it.price
-                        (salePrice.toLong() > prices.lowPrice.toLong()) && (salePrice.toLong() < prices.highPrice.toLong())
+                        (salePrice.toLong() >= prices.lowPrice.toLong()) && (salePrice.toLong() <= prices.highPrice.toLong())
                     }
                     viewModel.updateBookmarkUiState(filteredList)
-                    Log.e(
-                        "금액설정",
-                        "최저:${prices.lowPrice} // 최대:${prices.highPrice}\n결과:$filteredList"
-                    )
                 },
                 enabled = prices.isNotEmpty(),
                 shape = RoundedCornerShape(5.dp),
@@ -294,6 +316,47 @@ fun SettingPriceForm(
                     .width(90.dp)
             ) {
                 Text("확인")
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchAuthorsForm(
+    bookmarks: List<Book>,
+    viewModel: BookmarkViewModel = hiltViewModel()
+) {
+    Surface {
+        var authors by remember { mutableStateOf("") }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.dp, horizontal = 5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SearchField(
+                value = authors,
+                onChange = { data -> authors = data },
+                modifier = Modifier
+                    .weight(1f)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = {
+                    val filteredList = bookmarks.filter {
+                        it.authors.contains(authors)
+                    }
+                    viewModel.updateBookmarkUiState(filteredList)
+                },
+                enabled = authors.isNotEmpty(),
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .width(90.dp)
+            ) {
+                Text("검색")
             }
         }
     }

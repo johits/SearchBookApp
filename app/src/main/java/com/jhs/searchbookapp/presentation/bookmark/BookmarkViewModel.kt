@@ -25,15 +25,21 @@ class BookmarkViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getBookmarkedBookIdsUseCase().collect { list ->
-                _bookmarkUiState.emit(list.sortedBy { it.title })
-            }
+            refreshBookmarkUiState()
         }
     }
 
     fun updateBookmarkUiState(books: List<Book>) {
         viewModelScope.launch {
             _bookmarkUiState.emit(books)
+        }
+    }
+
+    fun refreshBookmarkUiState() {
+        viewModelScope.launch {
+            getBookmarkedBookIdsUseCase().collect { list ->
+                _bookmarkUiState.emit(list.sortedBy { it.title })
+            }
         }
     }
 }
