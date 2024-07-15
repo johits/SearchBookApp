@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.jhs.searchbookapp.data.core.constant.DataStoreKey
+import com.jhs.searchbookapp.data.core.local.datastore.DataStoreManager
 import com.jhs.searchbookapp.domain.bookmark.usecase.GetBookmarkedBookIdsUseCase
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.domain.search.usecase.GetSearchResultUseCase
@@ -22,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getSearchResultUseCase: GetSearchResultUseCase,
-    private val getBookmarkedBookIdsUseCase: GetBookmarkedBookIdsUseCase
+    private val getBookmarkedBookIdsUseCase: GetBookmarkedBookIdsUseCase,
+    private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
 
     private val _errorFlow = MutableSharedFlow<Throwable>()
@@ -30,6 +33,11 @@ class SearchViewModel @Inject constructor(
 
     private val _booksState = MutableStateFlow<PagingData<Book>>(PagingData.empty())
     val booksState: StateFlow<PagingData<Book>> = _booksState
+
+    init {
+        val initQuery = fetchQuery().ifEmpty { "" }
+        getBooks(initQuery)
+    }
 
     fun getBooks(query: String) {
         viewModelScope.launch {
@@ -46,5 +54,17 @@ class SearchViewModel @Inject constructor(
                 _booksState.value = combinedUiState
             }
         }
+    }
+
+    fun saveQuery(query: String) {
+        dataStoreManager.patchSyncDataStoreString(DataStoreKey.QUERY, query)
+    }
+
+    fun deleteQuery(query: String) {
+        dataStoreManager.removeSyncDataStoreString(DataStoreKey.QUERY)
+    }
+
+    private fun fetchQuery(): String {
+        return dataStoreManager.fetchSyncDataStoreString(DataStoreKey.QUERY)
     }
 }

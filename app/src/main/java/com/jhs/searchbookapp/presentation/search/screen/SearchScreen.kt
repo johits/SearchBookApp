@@ -4,29 +4,42 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
-import com.jhs.searchbookapp.R
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.search.BookCard
 import com.jhs.searchbookapp.presentation.search.SearchViewModel
-import com.jhs.searchbookapp.presentation.ui.theme.SearchBookAppTheme
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -54,51 +67,21 @@ internal fun SearchScreen(
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        searchViewModel.getBooks("사랑")
-    }
+
     val books = searchViewModel.booksState.collectAsLazyPagingItems()
-//    val booksItem by remember { books }
-//    val books = mainViewModel.bookPager.collectAsLazyPagingItems()
+
     LaunchedEffect(true) {
         searchViewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
 
-//    if (books.isEmpty()) {
-//        BookmarkEmptyScreen()
-//    }
-
-//    SearchView(
-//        query = searchViewModel.query.value,
-//        onQueryChanged = { newQuery ->
-//            searchViewModel.setQuery(newQuery)
-//        },
-//        onSearch = {
-//            searchViewModel.getBooks(searchViewModel.query.value)
-//            focusManager.clearFocus()
-//        },
-//        onClearQuery = {
-//            searchViewModel.setQuery("")
-//            searchViewModel.getBooks("")
-//        },
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .background(
-//                color = Color.White,
-//                shape = RoundedCornerShape(8.dp)
-//            )
-//    )
+    SearchForm()
 
     Box(modifier = Modifier.fillMaxSize()) {
-//        BookTopAppBar(
-//            searchState = searchState,
-//            onBackClick = onBackClick,
-//        )
         BookContent(
             books = books,
             modifier = Modifier
                 .systemBarsPadding()
-                .padding(top = 48.dp)
+                .padding(top = 70.dp)
                 .fillMaxSize(),
             onBookClick = onBookClick
         )
@@ -146,36 +129,11 @@ private fun BookContent(
                         )
                     }
                 }
-//                bookItems(
-//                    items = books,
-//                    onItemClick = onBookClick
-//                )
             }
         }
     }
 
 }
-
-//private fun LazyListScope.bookItems(
-//    items: List<Book>,
-//    onItemClick: (Book) -> Unit,
-//) {
-//    itemsIndexed(items) { index, item ->
-//        item?.let {
-//            BookItem(
-//                item = item,
-//                onItemClick = onItemClick
-//            )
-//        }
-//    }
-//
-////    itemsIndexed(items) { index, item ->
-////        BookItem(
-////            item = item,
-////            onItemClick = onItemClick
-////        )
-////    }
-//}
 
 @Composable
 private fun BookItem(
@@ -190,14 +148,66 @@ private fun BookItem(
     }
 }
 
+
 @Composable
-private fun SearchEmptyScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-            modifier = Modifier.align(Alignment.Center),
-            text = stringResource(id = R.string.empty_search_item_description),
-            style = SearchBookAppTheme.typography.titleSmallM,
-            color = Color.Gray
-        )
+fun SearchField(
+    value: String,
+    onChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String = "도서 검색"
+) {
+    val focusManager = LocalFocusManager.current
+    TextField(
+        value = value,
+        onValueChange = onChange,
+        modifier = modifier,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions(
+            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        ),
+        label = { Text(label) },
+        singleLine = true,
+        visualTransformation = VisualTransformation.None
+    )
+}
+
+@Composable
+fun SearchForm(
+    viewModel: SearchViewModel = hiltViewModel()
+) {
+    Surface {
+        var query by remember { mutableStateOf("") }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.dp, horizontal = 5.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SearchField(
+                value = query,
+                onChange = { data -> query = data },
+                modifier = Modifier
+                    .weight(3f)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = {
+                    viewModel.apply {
+                        saveQuery(query)
+                        getBooks(query)
+                    }
+
+                },
+                enabled = query.isNotEmpty(),
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                Text("검색")
+            }
+        }
     }
 }
