@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun SearchRoute(
+    padding: PaddingValues,
     onBookClick: (Book) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
