@@ -34,14 +34,13 @@ internal fun BookCard(
         DefaultCard(
             modifier = modifier
         ) {
-//            BookCardContent(book = book)
+            BookCardContent(book = book)
         }
     } else {
         DefaultCard(
             modifier = modifier,
             onClick = { onBookClick(book) }
         ) {
-//            BookCardContent(book = book)
             BookCardContent(
                 book = book
             )
