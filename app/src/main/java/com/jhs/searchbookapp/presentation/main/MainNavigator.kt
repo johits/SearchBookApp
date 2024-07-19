@@ -8,10 +8,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.google.gson.Gson
+import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.bookmark.navigation.navigateBookmark
 import com.jhs.searchbookapp.presentation.detail.navigation.navigateBookDetail
 import com.jhs.searchbookapp.presentation.search.navigation.SearchRoute
 import com.jhs.searchbookapp.presentation.search.navigation.navigateSearch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 internal class MainNavigator(
     val navController: NavHostController,
@@ -43,21 +47,29 @@ internal class MainNavigator(
     }
 
 
-//    fun navigateSearch() {
-//        navController.navigateSearch()
-//    }
+    fun navigateBookDetail(book: Book) {
+        val gson = Gson()
+        val bookJsonString = gson.toJson(book)
+        navController.navigate(
+            "detail/${
+                URLEncoder.encode(
+                    bookJsonString,
+                    StandardCharsets.UTF_8.toString()
+                )
+            }"
+        )
+        navController.navigateBookDetail(bookJsonString)
 
-    fun navigateBookDetail(bookId:String) {
-        navController.navigateBookDetail(bookId)
+
     }
 
-    private fun popBackStack() {
-        navController.popBackStack()
+    private fun popBackStack(route: String) {
+        navController.popBackStack(route, false)
     }
 
     fun popBackStackIfNotSearch() {
         if (!isSameCurrentDestination(SearchRoute.ROUTE)) {
-            popBackStack()
+            popBackStack(SearchRoute.ROUTE)
         }
     }
 

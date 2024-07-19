@@ -1,5 +1,8 @@
 package com.jhs.searchbookapp.domain.search.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Book(
     val title: String, //도서 제목
     val authors: List<String>, //저자

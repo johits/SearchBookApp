@@ -53,14 +53,13 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun BookDetailScreen(
-    bookId: String,
+    book: Book,
     onBackClick: () -> Unit,
-    viewModel: DetailViewModel = hiltViewModel(),
+    viewModel: DetailViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val detailUiState by viewModel.detailUiState.collectAsStateWithLifecycle()
     val effect by viewModel.detailUiEffect.collectAsStateWithLifecycle()
-
 
     Column(
         modifier = Modifier
@@ -84,8 +83,10 @@ internal fun BookDetailScreen(
         }
     }
 
-    LaunchedEffect(bookId) {
-        viewModel.fetchBook(bookId)
+    LaunchedEffect(book) {
+        if (book != null) {
+            viewModel.fetchBookDetail(book)
+        }
     }
 
     LaunchedEffect(effect) {

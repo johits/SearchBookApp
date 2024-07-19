@@ -50,9 +50,8 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun fetchBook(bookId: String) {
+    fun fetchBookDetail(book: Book) {
         viewModelScope.launch {
-            val book = getBookUseCase(bookId)
             _detailUiState.value = DetailUiState.Success(book)
         }
     }

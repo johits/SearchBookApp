@@ -31,6 +31,7 @@ junit4 = "4.13.2"
 paging_version = "3.0.0-alpha11"
 paging_compose_version = "1.0.0-alpha16"
 androidxDatastore = "1.1.0-beta02"
+logger = "2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -80,6 +81,7 @@ paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.r
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging_compose_version" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDatastore" }
+logger = { group = "com.orhanobut", name = "logger", version.ref = "logger" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

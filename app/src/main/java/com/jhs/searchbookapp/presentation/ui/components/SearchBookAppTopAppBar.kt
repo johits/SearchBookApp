@@ -69,7 +69,6 @@ fun SearchBookAppTopAppBar(
             }
 
             if (navigationType == TopAppBarNavigationType.Refresh) {
-
                 IconButton(
                     onClick = onNavigationClick,
                     modifier = Modifier

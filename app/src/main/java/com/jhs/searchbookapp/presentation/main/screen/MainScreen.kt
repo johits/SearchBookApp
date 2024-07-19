@@ -2,6 +2,7 @@ package com.jhs.searchbookapp.presentation.main.screen
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
@@ -82,18 +83,19 @@ internal fun MainScreen(
                 NavHost(
                     navController = navigator.navController,
                     startDestination = navigator.startDestination,
+                    exitTransition = { ExitTransition.None }
                 ) {
 
                     searchNavGraph(
                         padding = padding,
                         onBackClick = navigator::popBackStackIfNotSearch,
-                        onBookClick = { navigator.navigateBookDetail(it.isbn) },
+                        onBookClick = { navigator.navigateBookDetail(it) },
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
 
                     bookmarkNavGraph(
                         onShowErrorSnackBar = onShowErrorSnackBar,
-                        onBookClick = { navigator.navigateBookDetail(it.isbn) }
+                        onBookClick = { navigator.navigateBookDetail(it) }
                     )
                 }
             }

@@ -7,10 +7,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.gson.Gson
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.detail.navigation.DetailRoute
 import com.jhs.searchbookapp.presentation.detail.screen.BookDetailScreen
 import com.jhs.searchbookapp.presentation.search.screen.SearchRoute
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
+
 
 fun NavController.navigateSearch(navOptions: NavOptions) {
     navigate(SearchRoute.ROUTE, navOptions)
@@ -25,7 +29,6 @@ fun NavGraphBuilder.searchNavGraph(
     composable(SearchRoute.ROUTE) {
         SearchRoute(
             padding = padding,
-            onBackClick = onBackClick,
             onBookClick = onBookClick,
             onShowErrorSnackBar = onShowErrorSnackBar
         )
@@ -33,13 +36,17 @@ fun NavGraphBuilder.searchNavGraph(
 
     composable(
         route = DetailRoute.ROUTE,
-        arguments = listOf(navArgument("id") { type = NavType.StringType })
+        arguments = listOf(navArgument("book") { type = NavType.StringType })
     ) { navBackStackEntry ->
-        val bookId = navBackStackEntry.arguments?.getString("id") ?: ""
+        val bookDataJson = navBackStackEntry.arguments?.getString("book")
+        val book = URLDecoder.decode(bookDataJson, StandardCharsets.UTF_8.toString())
+        val bookData = Gson().fromJson(book, Book::class.java)
+
         BookDetailScreen(
-            bookId = bookId,
+            book = bookData,
             onBackClick = onBackClick
         )
+
     }
 }
 
