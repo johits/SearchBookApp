@@ -30,13 +30,6 @@ internal fun BookCard(
     modifier: Modifier = Modifier,
     onBookClick: (Book) -> Unit = { }
 ) {
-    if (book.contents.isBlank()) {
-        DefaultCard(
-            modifier = modifier
-        ) {
-            BookCardContent(book = book)
-        }
-    } else {
         DefaultCard(
             modifier = modifier,
             onClick = { onBookClick(book) }
@@ -45,7 +38,6 @@ internal fun BookCard(
                 book = book
             )
         }
-    }
 }
 
 @Composable
