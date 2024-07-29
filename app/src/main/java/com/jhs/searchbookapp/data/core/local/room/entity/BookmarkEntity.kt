@@ -20,15 +20,16 @@ data class BookmarkEntity(
     val isBookmarked: Boolean //즐겨찾기 여부
 ) {
     override fun toString(): String {
-        return "id = $id, " +
-                "title = $title" +
-                "authors = ${authors.map { it }}" +
-                "contents = $contents" +
-                "isbn = $isbn" +
-                "publisher = $publisher" +
-                "price = $price" +
-                "sale_price = $sale_price" +
-                "thumbnail = $thumbnail" +
+        return "id = $id\n" +
+                "title = $title\n" +
+                "authors = ${authors.map { it }}\n" +
+                "contents = $contents\n" +
+                "isbn = $isbn\n" +
+                "publisher = $publisher\n" +
+                "price = $price\n" +
+                "sale_price = $sale_price\n" +
+                "thumbnail = $thumbnail\n" +
+                "url = $url\n" +
                 "isBookmarked = $isBookmarked"
     }
 }

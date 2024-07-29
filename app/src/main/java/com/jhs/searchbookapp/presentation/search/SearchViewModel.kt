@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 
@@ -46,7 +48,26 @@ class SearchViewModel @Inject constructor(
 
             booksFlow.combine(bookmarkedIdsFlow) { books, bookmarkedIds ->
                 books.map { book ->
-                    book.copy(isBookmarked = bookmarkedIds.contains(book.copy(isBookmarked = true)))
+                    book.copy(
+                        thumbnail = URLDecoder.decode(
+                            book.thumbnail,
+                            StandardCharsets.UTF_8.toString()
+                        ),
+                        url = URLDecoder.decode(book.url, StandardCharsets.UTF_8.toString()),
+                        isBookmarked = bookmarkedIds.contains(
+                            book.copy(
+                                thumbnail = URLDecoder.decode(
+                                    book.thumbnail,
+                                    StandardCharsets.UTF_8.toString()
+                                ),
+                                url = URLDecoder.decode(
+                                    book.url,
+                                    StandardCharsets.UTF_8.toString()
+                                ),
+                                isBookmarked = true
+                            )
+                        )
+                    )
                 }
             }.catch { throwable ->
                 _errorFlow.emit(throwable)
