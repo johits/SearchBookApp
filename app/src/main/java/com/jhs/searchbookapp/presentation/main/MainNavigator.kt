@@ -12,7 +12,6 @@ import com.google.gson.Gson
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.bookmark.navigation.navigateBookmark
 import com.jhs.searchbookapp.presentation.detail.navigation.navigateBookDetail
-import com.jhs.searchbookapp.presentation.search.navigation.SearchRoute
 import com.jhs.searchbookapp.presentation.search.navigation.navigateSearch
 
 internal class MainNavigator(
@@ -51,18 +50,9 @@ internal class MainNavigator(
         navController.navigateBookDetail(bookJsonString)
     }
 
-    private fun popBackStack(route: String) {
-        navController.popBackStack(route, false)
+    fun popBackStack() {
+        navController.popBackStack()
     }
-
-    fun popBackStackIfNotSearch() {
-        if (!isSameCurrentDestination(SearchRoute.ROUTE)) {
-            popBackStack(SearchRoute.ROUTE)
-        }
-    }
-
-    private fun isSameCurrentDestination(route: String) =
-        navController.currentDestination?.route == route
 
     @Composable
     fun shouldShowBottomBar(): Boolean {

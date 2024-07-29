@@ -88,7 +88,7 @@ internal fun MainScreen(
 
                     searchNavGraph(
                         padding = padding,
-                        onBackClick = navigator::popBackStackIfNotSearch,
+                        onBackClick = navigator::popBackStack,
                         onBookClick = { navigator.navigateBookDetail(it) },
                         onShowErrorSnackBar = onShowErrorSnackBar
                     )
