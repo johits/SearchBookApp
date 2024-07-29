@@ -14,8 +14,6 @@ import com.jhs.searchbookapp.presentation.bookmark.navigation.navigateBookmark
 import com.jhs.searchbookapp.presentation.detail.navigation.navigateBookDetail
 import com.jhs.searchbookapp.presentation.search.navigation.SearchRoute
 import com.jhs.searchbookapp.presentation.search.navigation.navigateSearch
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 internal class MainNavigator(
     val navController: NavHostController,
@@ -50,17 +48,7 @@ internal class MainNavigator(
     fun navigateBookDetail(book: Book) {
         val gson = Gson()
         val bookJsonString = gson.toJson(book)
-        navController.navigate(
-            "detail/${
-                URLEncoder.encode(
-                    bookJsonString,
-                    StandardCharsets.UTF_8.toString()
-                )
-            }"
-        )
         navController.navigateBookDetail(bookJsonString)
-
-
     }
 
     private fun popBackStack(route: String) {
