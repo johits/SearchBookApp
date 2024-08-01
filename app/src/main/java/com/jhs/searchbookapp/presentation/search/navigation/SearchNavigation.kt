@@ -4,16 +4,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.google.gson.Gson
+import androidx.navigation.toRoute
 import com.jhs.searchbookapp.domain.search.model.Book
-import com.jhs.searchbookapp.presentation.detail.navigation.DetailRoute
 import com.jhs.searchbookapp.presentation.detail.screen.BookDetailScreen
 import com.jhs.searchbookapp.presentation.search.screen.SearchRoute
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 
 fun NavController.navigateSearch(navOptions: NavOptions) {
@@ -34,16 +29,10 @@ fun NavGraphBuilder.searchNavGraph(
         )
     }
 
-    composable(
-        route = DetailRoute.ROUTE,
-        arguments = listOf(navArgument("book") { type = NavType.StringType })
-    ) { navBackStackEntry ->
-        val bookDataJson = navBackStackEntry.arguments?.getString("book")
-        val book = URLDecoder.decode(bookDataJson, StandardCharsets.UTF_8.toString())
-        val bookData = Gson().fromJson(book, Book::class.java)
-
+    composable<Book> { navBackStackEntry ->
+        val book = navBackStackEntry.toRoute<Book>()
         BookDetailScreen(
-            book = bookData,
+            book = book,
             onBackClick = onBackClick
         )
 

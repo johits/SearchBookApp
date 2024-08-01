@@ -8,10 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.google.gson.Gson
 import com.jhs.searchbookapp.domain.search.model.Book
 import com.jhs.searchbookapp.presentation.bookmark.navigation.navigateBookmark
-import com.jhs.searchbookapp.presentation.detail.navigation.navigateBookDetail
 import com.jhs.searchbookapp.presentation.search.navigation.navigateSearch
 
 internal class MainNavigator(
@@ -45,9 +43,7 @@ internal class MainNavigator(
 
 
     fun navigateBookDetail(book: Book) {
-        val gson = Gson()
-        val bookJsonString = gson.toJson(book)
-        navController.navigateBookDetail(bookJsonString)
+        navController.navigate(book)
     }
 
     fun popBackStack() {
