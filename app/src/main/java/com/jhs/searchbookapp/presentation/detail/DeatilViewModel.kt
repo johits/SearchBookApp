@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.jhs.searchbookapp.domain.bookmark.usecase.GetBookmarkedBookIdsUseCase
 import com.jhs.searchbookapp.domain.bookmark.usecase.UpdateBookmarkUseCase
 import com.jhs.searchbookapp.domain.search.model.Book
-import com.jhs.searchbookapp.domain.search.usecase.GetBookUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getBookUseCase: GetBookUseCase,
     private val getBookmarkedBookIdsUseCase: GetBookmarkedBookIdsUseCase,
     private val updateBookmarkUseCase: UpdateBookmarkUseCase,
 ) : ViewModel() {
