@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     kotlin("kapt")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.21"
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
     id("dagger.hilt.android.plugin")
 }
 
@@ -44,7 +45,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.5"
+        kotlinCompilerExtensionVersion = "1.5.6"
     }
     packaging {
         resources {
