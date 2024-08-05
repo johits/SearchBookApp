@@ -3,10 +3,10 @@ name: Android CI
 on:
   push:
     branches: [ "main" ]
-pull_request:
-  branches:
-    [ "main" ]
-    [ "devel" ]
+  pull_request:
+    branches:
+      - main
+      - devel
 
 
 jobs:
@@ -32,7 +32,7 @@ jobs:
         uses: ScaCap/action-ktlint@master
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-check
+          reporter: github-pr-review
           fail_on_error: false
           level: warning
 
