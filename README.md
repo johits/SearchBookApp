@@ -12,6 +12,7 @@
   - Core
   - Lifecycle & ViewModel Compose
   - Navigation
+  - Paging3
 - Kotlin Libraries (Coroutine, DateTime, Serialization)
 
 - Compose
